@@ -78,7 +78,7 @@ for(n in 1:nrow(count_atc[1])){
 }
 #Annotate ATC5 level 2 subgroups
 
-atc_5_subgroups<-as.data.frame(read.csv("atc.csv"))
+atc_5_subgroups<-as.data.frame(read.csv("atc_level_2.csv"))
 count_atc$ATC_Level_2_subgroup="TBD"
 for(n in 1:nrow(atc_5_subgroups[1])){
 #  i=str_length(atc_5_subgroups$Subgroup[n])
@@ -89,7 +89,7 @@ for(n in 1:nrow(atc_5_subgroups[1])){
   }
 }
 #Annotate ATC5 level 3 class
-atc_5_class<-as.data.frame(read.csv("atc_codes.csv"))
+atc_5_class<-as.data.frame(read.csv("atc_class.csv"))
 count_atc$ATC_Level_3_class="TBD"
 for(n in 1:nrow(atc_5_class[1])){
 #  i=str_length(atc_5_class$Class[n])

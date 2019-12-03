@@ -165,7 +165,7 @@ tryCatch(setwd(dirname(sys.frame(1)$ofile)),
   })
 
 # Source data with NDCs:
-ndc_master_file <- paste0('../sample_ndc.csv')
+ndc_master_file <- paste0('sample_ndc.csv')
 # Character used to separate columns in the code_master_file:
 ndc_master_file_separator <- ','
 

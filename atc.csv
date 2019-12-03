@@ -1,0 +1,95 @@
+Subgroup,Description
+A01A,Stomatological preparations
+A02,Drugs for acid related disorders
+A03,Drugs for functional gastrointestinal disorders
+A04A,Antiemetics and antinauseants
+A05,Bile and liver therapy
+A06A,Drugs for constipation
+A07,Antidiarrheals  intestinal anti-inflammatory/anti-infective agents
+A08,Antiobesity preparations excluding diet products
+A09A,Digestives including enzymes
+A10,Drugs used in diabetes
+A11,Vitamins
+A12,Mineral supplements
+A13,Tonics
+A14,Anabolic agents for systemic use
+A15,Appetite stimulants
+A16A,Other alimentary tract and metabolism products
+B01A,Antithrombotic agents
+B02,Antihemorrhagic drugs
+B03,Antianemic drugs
+B05,Blood substitutes and perfusion solutions
+B06A,Other hematologic drugs
+C01,Cardiac therapy
+C02,Antihypertensive drugs
+C03,Diuretic drugs
+C04,Peripheral vasodilators
+C05,Vasoprotective drugs
+C07,Beta blocking agents
+C08,Calcium channel blockers
+C09,Agents acting on the renin-angiotensin system
+C10,Lipid modifying agents
+D01,Antifungals for dermatological use
+D02,Emollients and protectants
+D03,Treatment of wounds and ulcers
+D04,Antipyretics drugs
+D05,Antipsoriatic drugs
+D06,Antibiotics and chemotherapeutics for dermatological use
+D07,Topical dermatological corticosteroids
+D08,Antiseptics and disinfectants drugs
+D09,Medicated dressings
+D10,Acne drugs
+D11,Other dermatological drugs
+G01,Gynecological anti-infectives and antiseptics
+G02,Other gynecological drugs
+G03,Sex hormones and modulators of the genital system
+G04,Urological drugs
+H01,Pituitary and hypothalamic hormones and analogues
+H02,Corticosteroids systemic
+H03,Thyroid therapy
+H04,Pancreatic hormones
+H05,Calcium homeostasis
+J01,Antibacterial drugs
+J02,Antimycotic drugs
+J04,Antimycobacterials
+J05,Antiviral drugs
+J06,Immune sera and immunoglobulins
+J07,Vaccines
+L01,Antineoplastic drugs
+L02,Endocrine therapy
+L03A,Immunostimulants drugs
+L04A,Immunosuppressants drugs
+M01,Anti-inflammatory and antirheumatic drugs
+M02,Topical products for joint and muscular pain
+M03,Muscle relaxants
+M04A,Antigout preparations
+M05B,Drugs affecting bone structure and mineralization
+M09A,Other drugs for disorders of the musculo-skeletal system
+N01,Anesthetic drugs
+N02,Analgesic drugs
+N03A,Antiepileptic drugs
+N04,Antiparkinson drugs
+N05,Psycholeptics drugs
+N06,Psychoanaleptics
+N07,Other nervous system drugs
+P01,Antiprotozoal drugs
+P02,Anthelmintic drugs
+P03,Ectoparasiticides including scabicides insecticides and repellents
+R01,Nasal preparations
+R02A,Throat drugs
+R03,Drugs for obstructive airway diseases
+R05,Cough and cold drugs
+R06A,Antihistamines for systemic use
+R07A,Other respiratory system products
+S01,Ophthalmological drugs
+S02,Otologicals
+S03,Ophthalmological and otological preparations
+V01AA,Allergen extracts
+V03A,All other therapeutic products
+V04,Diagnostic agents
+V06,General nutrients
+V07,All other non-therapeutic products
+V08,Contrast media
+V09,Diagnostic radiopharmaceuticals
+V10,Therapeutic radiopharmaceuticals
+V20,Surgical dressings

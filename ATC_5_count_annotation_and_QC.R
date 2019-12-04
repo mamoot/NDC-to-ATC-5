@@ -4,7 +4,7 @@ library(dplyr)
 library(stringr)
 #Create dictionary with ndc_atc map
 
-dat <- dat<-cbind(code_map[1],code_map[9],code_map[6])
+dat<-cbind(code_map[1],code_map[10],code_map[6])
 #Count number of NDC codes that did not map to ATC5 codes
 uni<-distinct(dat,ndc,.keep_all = TRUE)
 empt<-array()
@@ -17,7 +17,7 @@ for(r in 1:nrow(uni[1]))
 #Generate final code map
 
 final_map<-na.omit(uni)
-ndc_to_atc<-array()
+#ndc_to_atc<-array()
 ndc_to_atc=master_source
 atcs=list()
 in_names=list()
@@ -31,7 +31,7 @@ names(atcs)<-in_names
 
 
 
-in_names=list()
+
 count_atc<-as.data.frame(table(ndc_to_atc[,4]))
 
 #count ATC5 codes using final map and annotate with name
@@ -60,7 +60,7 @@ for(n in 1:nrow(count_atc[1])){
   } else if(substr(count_atc[n,1],1,1)=="J"){
     count_atc$ATC_Level_1_group[n]<-"Antiinfective for systemic use"
   } else if(substr(count_atc[n,1],1,1)=="L"){
-    count_atc$ATC_Level_1_group[n]<-" Antineoplastic and immunomodulating agents"
+    count_atc$ATC_Level_1_group[n]<-"Antineoplastic and immunomodulating agents"
   } else if(substr(count_atc[n,1],1,1)=="M"){
     count_atc$ATC_Level_1_group[n]<-"Musculo-skeletal system"
   } else if(substr(count_atc[n,1],1,1)=="N"){
@@ -118,9 +118,15 @@ for(n in 1:nrow(ndc_to_atc[1])){
 #write out count_file
 count_outfile <- paste0(out_dir, 'atc_count_file ', curtime(), ' (', exec_label, ').csv')
 console('Writing ATC map to file ', count_outfile, '.')
-write.csv(count_atc, '~/NDC_to_ATC/ndc_map-master/Output/atc5/count_outfile.csv', row.names = F)
+write.csv(count_atc, 'count_outfile.csv', row.names = F)
 remove(count_outfile)
 console('Completed.')
 console(nrow(empt),' NDC codes did not map')
-write.csv(ndc_to_atc, '~/NDC_to_ATC/ndc_map-master/Output/atc5/ndc_to_atc.csv', row.names = F)
-write.csv(final_map, '~/NDC_to_ATC/ndc_map-master/Output/atc5/Supplementary_table_1.csv', row.names = F)
+write.csv(ndc_to_atc, 'ndc_to_atc.csv', row.names = F)
+write.csv(final_map, 'Supplementary_table_1_final_map.csv', row.names = F)
+
+ATC5_level1<-distinct(count_atc,ATC_Level_1_group,.keep_all = FALSE)
+#for(n in 1:nrow(count_atc[1])){
+#  i=match(ATC5_level1[n],count_atc$ATC_Level_1_group)
+#}
+

@@ -3,6 +3,33 @@ library(dplyr)
 library(viridis)
 library(gridExtra)
 
+mydata <- as_tibble(count_atc)
+Ali<-mydata %>% filter(ATC_Level_1_group == "Alimentary Tract and Metabolism")
+Blood<-mydata %>% filter(ATC_Level_1_group =="Blood and Blood forming organs")
+CV<-mydata %>% filter(ATC_Level_1_group == "Cardiovascular system")
+Derm<-mydata %>% filter(ATC_Level_1_group =="Dermatologicals")
+GU<-mydata %>% filter(ATC_Level_1_group =="Genito urinary system and sex hormones")
+Horm<-mydata %>% filter(ATC_Level_1_group =="Systemic hormonal preparations, excluding sex hormones and insulin")
+Abx<-mydata %>% filter(ATC_Level_1_group =="Antiinfective for systemic use")
+Neo<-mydata %>% filter(ATC_Level_1_group =="Antineoplastic and immunomodulating agents")
+MC<-mydata %>% filter(ATC_Level_1_group =="Musculo-skeletal system")
+NS<-mydata %>% filter(ATC_Level_1_group =="Nervous system")
+AP<-mydata %>% filter(ATC_Level_1_group =="Antiparasitic products, insecticides and repellents")
+RS<-mydata %>% filter(ATC_Level_1_group =="Respiratory system")
+SO<-mydata %>% filter(ATC_Level_1_group =="Sensory organs")
+VA<-mydata %>% filter(ATC_Level_1_group =="Various")
+
+#totals$Level1<-ATC5_level1$ATC_Level_1_group
+
+totals=cbind.data.frame(c(sum(Ali$Freq),sum(Blood$Freq),sum(CV$Freq),sum(Derm$Freq),sum(GU$Freq),sum(Horm$Freq),
+                          sum(Abx$Freq),sum(Neo$Freq),sum(MC$Freq),sum(NS$Freq),sum(AP$Freq),sum(RS$Freq),sum(SO$Freq),
+                          sum(VA$Freq)),ATC5_level1$ATC_Level_1_group)
+names(totals)<-c("Freq","Level_1")
+totals_data<-as_tibble(totals)
+
+top_10<-totals_data %>% arrange(desc(Freq)) %>% slice(1:10) 
+
+
 organPlot <- data.frame(organ = c("lung", "nerve", "brain", "liver", "stomach", "colon", "pancreas","lymph_node","skin","kidney","urinary_bladder","bone_marrow","skeletal_muscle","heart", "leukocyte"), 
                         type = c("respiratory","circulation", "circulation",  "nervous system", "nervous system", "digestion", "digestion", "digestion","digestion","other","other","other","other","other","other"), 
                         colour = c("blue","red", "red", "purple", "purple", "orange", "orange", "orange","orange","green","yellow","yellow"," red","blue","orange"), 

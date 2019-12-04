@@ -1,101 +1,132 @@
-library(gganatogram)
+#Annotate original NDC codes with atc_5 code
+library(ggplot2)
 library(dplyr)
-library(viridis)
-library(gridExtra)
+library(stringr)
+#Create dictionary with ndc_atc map
 
-mydata <- as_tibble(count_atc)
-Ali<-mydata %>% filter(ATC_Level_1_group == "Alimentary Tract and Metabolism")
-Blood<-mydata %>% filter(ATC_Level_1_group =="Blood and Blood forming organs")
-CV<-mydata %>% filter(ATC_Level_1_group == "Cardiovascular system")
-Derm<-mydata %>% filter(ATC_Level_1_group =="Dermatologicals")
-GU<-mydata %>% filter(ATC_Level_1_group =="Genito urinary system and sex hormones")
-Horm<-mydata %>% filter(ATC_Level_1_group =="Systemic hormonal preparations, excluding sex hormones and insulin")
-Abx<-mydata %>% filter(ATC_Level_1_group =="Antiinfective for systemic use")
-Neo<-mydata %>% filter(ATC_Level_1_group =="Antineoplastic and immunomodulating agents")
-MC<-mydata %>% filter(ATC_Level_1_group =="Musculo-skeletal system")
-NS<-mydata %>% filter(ATC_Level_1_group =="Nervous system")
-AP<-mydata %>% filter(ATC_Level_1_group =="Antiparasitic products, insecticides and repellents")
-RS<-mydata %>% filter(ATC_Level_1_group =="Respiratory system")
-SO<-mydata %>% filter(ATC_Level_1_group =="Sensory organs")
-VA<-mydata %>% filter(ATC_Level_1_group =="Various")
+dat<-cbind(code_map[1],code_map[10],code_map[6])
+#Count number of NDC codes that did not map to ATC5 codes
+uni<-distinct(dat,ndc,.keep_all = TRUE)
+empt<-array()
+final_map<-uni
+for(r in 1:nrow(uni[1]))
+  if(is.na(uni[r,2])==TRUE){
+    empt<-rbind(empt,uni[r,])
+    #uni<-uni[-c(r),]
+  }
+#Generate final code map
 
-#totals$Level1<-ATC5_level1$ATC_Level_1_group
-
-totals=cbind.data.frame(c(sum(Ali$Freq),sum(Blood$Freq),sum(CV$Freq),sum(Derm$Freq),sum(GU$Freq),sum(Horm$Freq),
-                          sum(Abx$Freq),sum(Neo$Freq),sum(MC$Freq),sum(NS$Freq),sum(AP$Freq),sum(RS$Freq),sum(SO$Freq),
-                          sum(VA$Freq)),ATC5_level1$ATC_Level_1_group)
-names(totals)<-c("Freq","Level_1")
-totals_data<-as_tibble(totals)
-
-top_10<-totals_data %>% arrange(desc(Freq)) %>% slice(1:10) 
-
-
-organPlot <- data.frame(organ = c("lung", "nerve", "brain", "liver", "stomach", "colon", "pancreas","lymph_node","skin","kidney","urinary_bladder","bone_marrow","skeletal_muscle","heart", "leukocyte"), 
-                        type = c("respiratory","circulation", "circulation",  "nervous system", "nervous system", "digestion", "digestion", "digestion","digestion","other","other","other","other","other","other"), 
-                        colour = c("blue","red", "red", "purple", "purple", "orange", "orange", "orange","orange","green","yellow","yellow"," red","blue","orange"), 
-                        value = c(3,17,17,15,15,15,15,7,6,4,4,4,2,40,40), 
-                        stringsAsFactors=F)
+final_map<-na.omit(uni)
+#ndc_to_atc<-array()
+ndc_to_atc=master_source
+atcs=list()
+in_names=list()
+for(n in 1:nrow(master_source[1])){
+  i=match(master_source[n,3],final_map[,1])
+  atcs=as.character(append(atcs,final_map[i,2]))
+  in_names=as.character(append(in_names,final_map[i,3]))
+}
+ndc_to_atc<-cbind(ndc_to_atc,atcs,in_names)
+names(atcs)<-in_names
 
 
-gganatogram(data=organPlot, fillOutline='#a6bddb', organism='human', sex='male', fill="value")+
-theme_void()+  scale_fill_gradient(low = "white", high = "red")+theme(legend.position="top")
 
 
-#ATC_classes <- data.frame(read.csv(file="count_outfile_summary.csv", header=TRUE, sep=","))
-df=data.frame(group=c("Alimentary Tract and Metabolism","Antiinfectives","Antineoplastic and immunomodulating","	Blood and Blood forming organs","Cardiovascular","Dermatologicals","Genitourinary and sex hormones","Musculo-skeletal systems","	Nervous system","Respiratory System")
-              ,value=c(15.5,6.4,2.0,3.6,39.4,6.2,3.8,2.1,16.5,2.7))
-top_ten<-data.frame(group=c("Lipid Modifying Agents","Diuretics","Calcium Channel Blockers","Renin-Angiotensin system agents",
-                    "Beta blocking agents","Acid-relateted disorders","Diabetic drugs","Analgesics","Corticosteroids","Anxiolytics"),
-                    value=c(6.9,4.1,3.6,5.7,3.1,2.1,1.6,1.6,1.6,1.5))
+count_atc<-as.data.frame(table(ndc_to_atc[,4]))
 
-bp<- ggplot(df, aes(x="", y=value, fill=group))+ggtitle("Top 10 ATC Levels (%)")+
-  geom_bar(width = 1, stat = "identity")+theme(axis.title=element_blank())
+#count ATC5 codes using final map and annotate with name
+distinct_map<-distinct(final_map,atc5,.keep_all = TRUE)
+count_atc$in_names="TBD"
+for(n in 1:nrow(count_atc[1])){
+  i=match(distinct_map[n,2],count_atc[,1])
+  count_atc$in_names[i]<-as.character(distinct_map[n,3])
+}
+
+#Annotate ATC5 Level 1 group
+count_atc$ATC_Level_1_group="TBD"
+for(n in 1:nrow(count_atc[1])){
+  if(substr(count_atc[n,1],1,1)=="A"){
+    count_atc$ATC_Level_1_group[n]<-"Alimentary Tract and Metabolism"
+  } else if(substr(count_atc[n,1],1,1)=="B"){
+    count_atc$ATC_Level_1_group[n]<-"Blood and Blood forming organs"
+  } else if(substr(count_atc[n,1],1,1)=="C"){
+    count_atc$ATC_Level_1_group[n]<-"Cardiovascular system"
+  } else if(substr(count_atc[n,1],1,1)=="D"){
+    count_atc$ATC_Level_1_group[n]<-"Dermatologicals"
+  } else if(substr(count_atc[n,1],1,1)=="G"){
+    count_atc$ATC_Level_1_group[n]<-"Genito urinary system and sex hormones"
+  } else if(substr(count_atc[n,1],1,1)=="H"){
+    count_atc$ATC_Level_1_group[n]<-"Systemic hormonal preparations, excluding sex hormones and insulin"
+  } else if(substr(count_atc[n,1],1,1)=="J"){
+    count_atc$ATC_Level_1_group[n]<-"Antiinfective for systemic use"
+  } else if(substr(count_atc[n,1],1,1)=="L"){
+    count_atc$ATC_Level_1_group[n]<-"Antineoplastic and immunomodulating agents"
+  } else if(substr(count_atc[n,1],1,1)=="M"){
+    count_atc$ATC_Level_1_group[n]<-"Musculo-skeletal system"
+  } else if(substr(count_atc[n,1],1,1)=="N"){
+    count_atc$ATC_Level_1_group[n]<-"Nervous system"
+  } else if(substr(count_atc[n,1],1,1)=="P"){
+    count_atc$ATC_Level_1_group[n]<-"Antiparasitic products, insecticides and repellents"
+  } else if(substr(count_atc[n,1],1,1)=="R"){
+    count_atc$ATC_Level_1_group[n]<-"Respiratory system"
+  } else if(substr(count_atc[n,1],1,1)=="S"){
+    count_atc$ATC_Level_1_group[n]<-"Sensory organs"
+  } else if(substr(count_atc[n,1],1,1)=="V"){
+    count_atc$ATC_Level_1_group[n]<-"Various"
+  }
+  
+}
+#Annotate ATC5 level 2 subgroups
+
+atc_5_subgroups<-as.data.frame(read.csv("atc_level_2.csv"))
+count_atc$ATC_Level_2_subgroup="TBD"
+for(n in 1:nrow(atc_5_subgroups[1])){
+#  i=str_length(atc_5_subgroups$Subgroup[n])
+  for(v in 1:nrow(count_atc[1])){
+    i=str_length(atc_5_subgroups$Subgroup[n])
+    x=match(substr(count_atc$Var1[v],1,i),atc_5_subgroups$Subgroup)
+    if(is.na(x)==FALSE){count_atc$ATC_Level_2_subgroup[v]<-as.character(atc_5_subgroups$Description[x])}
+  }
+}
+#Annotate ATC5 level 3 class
+atc_5_class<-as.data.frame(read.csv("atc_class.csv"))
+count_atc$ATC_Level_3_class="TBD"
+for(n in 1:nrow(atc_5_class[1])){
+#  i=str_length(atc_5_class$Class[n])
+  for(v in 1:nrow(count_atc[1])){
+    i=str_length(atc_5_class$Class[n])
+    x=match(substr(count_atc$Var1[v],1,i),atc_5_class$Class)
+    if(is.na(x)==FALSE){count_atc$ATC_Level_3_class[v]<-as.character(atc_5_class$Description[x])}
+  }
+}
 
 
-bp
-#pie <- bp + coord_polar("y", start=0)+theme_void()
-#pie
+ndc_to_atc$ATC_level_1<-"TBD"
+ndc_to_atc$ATC_level_2<-"TBD"
+ndc_to_atc$ATC_level_3<-"TBD"
 
-p <- ggplot(df, aes(x=1, y=value, fill=group)) +
-  ggtitle("Top 10 ATC Levels (%)") +
-  coord_polar(theta='y')+theme(axis.ticks=element_blank(),  # the axis ticks
-                               axis.title=element_blank(),  # the axis labels
-                               axis.text.y=element_blank(), # the 0.75, 1.00, 1.25 labels
-                               axis.text.x=element_text(color='black'))
-p <- p +
-  # black border around pie slices
-  geom_bar(stat="identity", color='black') +theme(axis.ticks=element_blank(),  # the axis ticks
-                                                  axis.title=element_blank(),  # the axis labels
-                                                  axis.text.y=element_blank(), # the 0.75, 1.00, 1.25 labels
-                                                  axis.text.x=element_text(color='black'),
-                                                  ) +
-  # remove black diagonal line from legend
-  guides(fill=guide_legend(override.aes=list(colour=NA)))+theme_void()+scale_fill_brewer(palette="Set3")
+for(n in 1:nrow(ndc_to_atc[1])){
+  x=match(ndc_to_atc$atcs[n],count_atc$Var1)
+  ndc_to_atc$ATC_level_1[n]<-as.character(count_atc$ATC_Level_1_group[x])
+  ndc_to_atc$ATC_level_2[n]<-as.character(count_atc$ATC_Level_2_subgroup[x])
+  ndc_to_atc$ATC_level_3[n]<-as.character(count_atc$ATC_Level_3_class[x])
+}
+  
+  
+  
+  
+#write out count_file
+count_outfile <- paste0(out_dir, 'atc_count_file ', curtime(), ' (', exec_label, ').csv')
+console('Writing ATC map to file ', count_outfile, '.')
+write.csv(count_atc, 'count_outfile.csv', row.names = F)
+remove(count_outfile)
+console('Completed.')
+console(nrow(empt),' NDC codes did not map')
+write.csv(ndc_to_atc, 'ndc_to_atc.csv', row.names = F)
+write.csv(final_map, 'Supplementary_table_1_final_map.csv', row.names = F)
 
-print(p)
-bp<- ggplot(top_ten, aes(x="", y=value, fill=group))+ggtitle("Top ten drug classes(%)")+
-  geom_bar(width = 1, stat = "identity")+theme(axis.title=element_blank())
-
-
-bp
-#pie <- bp + coord_polar("y", start=0)+theme_void()
-#pie
-
-p <- ggplot(top_ten, aes(x=1, y=value, fill=group)) +
-  ggtitle("Top ten medications classified by ATC level 3 (%)") +
-  coord_polar(theta='y')+theme(axis.ticks=element_blank(),  # the axis ticks
-                               axis.title=element_blank(),  # the axis labels
-                               axis.text.y=element_blank(), # the 0.75, 1.00, 1.25 labels
-                               axis.text.x=element_text(color='black'))
-p <- p +
-  # black border around pie slices
-  geom_bar(stat="identity", color='black') +theme(axis.ticks=element_blank(),  # the axis ticks
-                                                  axis.title=element_blank(),  # the axis labels
-                                                  axis.text.y=element_blank(), # the 0.75, 1.00, 1.25 labels
-                                                  axis.text.x=element_text(color='black'),
-  ) +
-  # remove black diagonal line from legend
-  guides(fill=guide_legend(override.aes=list(colour=NA)))+theme_void()+scale_fill_brewer(palette="Set3")
-
-print(p)
+ATC5_level1<-distinct(count_atc,ATC_Level_1_group,.keep_all = FALSE)
+#for(n in 1:nrow(count_atc[1])){
+#  i=match(ATC5_level1[n],count_atc$ATC_Level_1_group)
+#}
 

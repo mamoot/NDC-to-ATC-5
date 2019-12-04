@@ -41,7 +41,7 @@ gganatogram(data=organPlot, fillOutline='#a6bddb', organism='human', sex='male',
 theme_void()+  scale_fill_gradient(low = "white", high = "red")+theme(legend.position="top")
 
 
-ATC_classes <- data.frame(read.csv(file="count_outfile_summary.csv", header=TRUE, sep=","))
+#ATC_classes <- data.frame(read.csv(file="count_outfile_summary.csv", header=TRUE, sep=","))
 df=data.frame(group=c("Alimentary Tract and Metabolism","Antiinfectives","Antineoplastic and immunomodulating","	Blood and Blood forming organs","Cardiovascular","Dermatologicals","Genitourinary and sex hormones","Musculo-skeletal systems","	Nervous system","Respiratory System")
               ,value=c(15.5,6.4,2.0,3.6,39.4,6.2,3.8,2.1,16.5,2.7))
 top_ten<-data.frame(group=c("Lipid Modifying Agents","Diuretics","Calcium Channel Blockers","Renin-Angiotensin system agents",

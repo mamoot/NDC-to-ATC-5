@@ -2,9 +2,9 @@
 #' Mapping U.S. Food and Drug Administration (FDA) National Drug Codes (NDC) to Drug Classes and
 #' Terminologies by querying the RxNorm API at https://rxnav.nlm.nih.gov.
 #' 
-#' By Fabrício Kury: https://github.com/fabkury
 #' 
-#' Modified and adapted by Eric Rutledge, MD 11/23/2019
+#' 
+#' Modified and adapted by Eric Rutledge, MD from Fabrício Kury
 ##
 
 #' HOW TO RUN THIS SCRIPT:
